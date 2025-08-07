@@ -1,0 +1,104 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  first_name    String    @default("NO_NAME")
+  last_name     String    @default("NO_NAME")
+  name          String    @default("NO_NAME")
+  email         String    @unique(map: "user_email_idx")
+  emailVerified DateTime? @db.Timestamp(6)
+  image         String?
+  password      String?
+  isadmin       Boolean   @default(false)
+  isactive      Boolean   @default(true)
+  createdAt     DateTime  @default(now()) @db.Timestamp(6)
+  updatedAt     DateTime  @updatedAt
+  account       Account[]
+  session       Session[]
+  UserImages    UserImages[]
+}
+
+model Account {
+  userId            String  @db.Uuid
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([provider, providerAccountId])
+}
+
+model Session {
+  sessionToken String   @id
+  userId       String   @db.Uuid
+  expires      DateTime @db.Timestamp(6)
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+  updatedAt DateTime @updatedAt
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@id([identifier, token])
+}
+
+
+model Category {
+  id               String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  category_name    String
+  description      String?
+  isactive         Boolean?  @default(true)
+  createdAt        DateTime  @default(now()) @db.Timestamp(6)
+  updatedAt        DateTime? @updatedAt
+}
+
+
+model Status {
+  id               String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  status_name      String
+  description      String?
+  isactive         Boolean?  @default(true)
+  typeid           Int
+  createdAt        DateTime  @default(now()) @db.Timestamp(6)
+  updatedAt        DateTime? @updatedAt
+}
+
+model UserImages {
+  id            String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId        String   @db.Uuid
+  categoryId    String
+  category_name String?
+  src           String
+  caption       String?
+  format        String
+  width         Int
+  height        Int
+  isblackwhite  Boolean? @default(false)
+  isactive      Boolean? @default(false)
+  createdAt     DateTime @default(now()) @db.Timestamp(6)
+  updatedAt     DateTime @updatedAt @db.Timestamp(6)
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}

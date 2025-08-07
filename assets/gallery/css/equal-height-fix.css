@@ -1,0 +1,57 @@
+/* Equal Height Photo Boxes Fix */
+
+.artist-gallery-images .photo-box {
+    height: 300px; /* Fixed height for all boxes */
+    margin-top: 20px;
+    overflow: hidden;
+}
+
+.artist-gallery-images .photo-box > div {
+    height: 100% !important;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.artist-gallery-images .photo-box img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover; /* This will crop the image to fit while maintaining aspect ratio */
+    opacity: 1 !important; /* Override the opacity: 0 */
+}
+
+/* Alternative: Use object-fit: contain to show full image with letterboxing */
+.artist-gallery-images .photo-box.contain-image img {
+    object-fit: contain;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .artist-gallery-images .photo-box {
+        height: 250px; /* Smaller height for mobile */
+    }
+}
+
+@media (max-width: 576px) {
+    .artist-gallery-images .photo-box {
+        height: 200px; /* Even smaller for small mobile */
+    }
+}
+
+/* Ensure the enlarge button is properly positioned */
+.artist-gallery-images .photo-box .enlarge-photo {
+    top: 10px;
+    right: 10px;
+
+    z-index: 10;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 1px;
+    border-radius: 2px;
+}
+
+.artist-gallery-images .photo-box .enlarge-photo img {
+    width: 20px !important;
+    height: 20px !important;
+    object-fit: contain;
+}
