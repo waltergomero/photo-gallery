@@ -8,7 +8,7 @@ import  prisma  from '@/prisma/prisma';
 import { PAGE_SIZE } from '@/lib/constants';
 
 // Get all the categories
-export async function getAllCategories({  limit = PAGE_SIZE,  page,  query,}) {
+export async function getAllCategories({  limit = PAGE_SIZE,  page,  query, }: { limit?: number; page: number; query?: string; }) {
   const queryFilter =
     query && query !== 'all'
       ? {
@@ -67,7 +67,7 @@ export const fetchAllCategories = async () => {
 }
 
   //get category data by ID
-  export const fetchCategoryById = async (id) => {
+  export const fetchCategoryById = async (id: string) => {
     try {
       const _category = await prisma.Category.findUnique({
         where: {id: id},
@@ -80,7 +80,7 @@ export const fetchAllCategories = async () => {
   };
 
 
-export async function createCategory(formData) {
+export async function createCategory(formData: FormData) {
   noStore();
   try {
     console.log("Form data received in createCategory:", formData);
@@ -131,7 +131,7 @@ export async function createCategory(formData) {
 }
 
 //update category action
-export async function updateCategory(formData) {
+export async function updateCategory(formData: FormData) {
   noStore();
   try {
     const id = formData.get("id");
@@ -161,7 +161,7 @@ export async function updateCategory(formData) {
       }
     }
    const data = {
-      category_name: formData.category_name,
+      category_name: category_name,
       isactive: isactive,
       description: description,
     };
@@ -183,7 +183,7 @@ export async function updateCategory(formData) {
 }
 
 //delete category action
-export async function deleteCategory(id) {
+export async function deleteCategory(id: string) {
   noStore();
 
   try {

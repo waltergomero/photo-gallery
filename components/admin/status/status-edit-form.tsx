@@ -54,13 +54,13 @@ const StatusEditForm = ({status}:any) => {
     <div className="card">
         <div className="card-body">
             <form className="row g-3" onSubmit={onSubmit}>
-                <div className="col-md-3">
+                <div className="col-md-6">
                     <input type="hidden" name='id' defaultValue={status?.id} />
                     <label htmlFor="status_name" className="form-label">Status Name</label>
                     <input type="text" className="form-control" id="status_name" name='status_name' defaultValue={status?.status_name} />
                     <ZodErrors error={state?.zodErrors?.status_name} />
                 </div>
-                <div className="col-md-3">
+                <div className="col-md-6">
                     <label htmlFor="status_type" className="form-label">Type</label>
                     <select className="form-select" id="status_type" 
                     name='typeid' defaultValue={status?.typeid}>
@@ -74,7 +74,7 @@ const StatusEditForm = ({status}:any) => {
                         Please select a status type.
                     </div>
                 </div>
-                <div className="col-md-6">
+                <div className="col-md-12">
                     <label htmlFor="status_description" className="form-label">Description</label>
                     <input type="text" className="form-control" id="status_description" name='description' defaultValue={status?.description} />
                 </div>
@@ -84,7 +84,7 @@ const StatusEditForm = ({status}:any) => {
                 <div className="col-12 justify-content-center d-flex">
                      <Button type='button' onClick={() => router.back()} className='btn btn-light'>Cancel</Button>
                         <span className="mx-2"></span>
-                     <Button className="btn btn-secondary" type="submit">Save</Button>
+                     <Button className="btn btn-primary" type="submit">Save</Button>
                 </div>
             </form>
         </div> 

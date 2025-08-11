@@ -56,8 +56,8 @@ export default function Header() {
                                 {/* <Button variant="link" className="btn-icon fw-semibold text-body me-2" onClick={toggleTheme}>
                                     <TbContrast className="fs-22" />
                                 </Button> */}
-                                <Link href="/auth-sign-in" className="btn btn-link fw-semibold text-body ps-2">SIGN IN</Link>
-                                <Link href="/auth-sign-up" className="btn btn-sm btn-primary ms-2">Sign Up</Link>
+                                <Link href="/signin" className="btn btn-link fw-semibold text-body ps-2">SIGN IN</Link>
+                                <Link href="/signup" className="btn btn-sm btn-primary ms-2">Sign Up</Link>
                             </div>
                         </NavbarCollapse>
                     </Container>

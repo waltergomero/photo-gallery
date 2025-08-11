@@ -71,7 +71,7 @@ const StatusCreateForm = () => {
                         Please select your state.
                     </div>
                 </div>
-                <div className="col-md-6">
+                <div className="col-md-12">
                     <label htmlFor="status_description" className="form-label">Description</label>
                     <input type="text" className="form-control" id="status_description" name='description'/>
                 </div>
@@ -79,7 +79,7 @@ const StatusCreateForm = () => {
                 <div className="col-12 justify-content-center d-flex">
                         <Button type='button' onClick={() => router.back()} className='btn btn-light'>Cancel</Button>
                         <span className="mx-2"></span>
-                        <Button className="btn btn-secondary" type="submit">Save</Button>
+                        <Button className="btn btn-primary" type="submit">Save</Button>
                 </div>
             </form>
         </div> 

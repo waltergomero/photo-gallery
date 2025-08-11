@@ -1,27 +1,27 @@
 import React from 'react'
-import StatusCreateForm from "@/components/admin/status/status-create-form";
+import GalleryGrid from "@/components/admin/gallery/gallery-grid";
 import PageBreadcrumb from '@/components/PageBreadcrumb';
-import { getAllStatus, deleteStatus } from '@/actions/status-actions';
+import { fetchImages, } from '@/actions/gallery-actions';
 import { requireAdmin } from '@/lib/auth-guard';
+import Link from 'next/link';
+import UploadImagesForm from '@/components/admin/gallery/upload-images';
 
 
-export const metadata= { title: "Status" }
+export const metadata= { title: "Gallery" }
 
 
-const StatusCreatePage = async (props) => {
+const UploadPage = async (props) => {
   await requireAdmin();
+  const images = await fetchImages();
 
     return (
             <div className="container-fluid">
-                <PageBreadcrumb title="Status" subtitle="table" />
+                <PageBreadcrumb title="Upload" subtitle="table" />
                  <div className="row justify-content-center">
                     <div className="col-xxl-10">
                         <div className="card">
-                            <div className="card-header">
-                                <h4 className="card-title">Status Table</h4>
-                            </div>
                             <div className="card-body">
-                                <StatusCreateForm/>
+                                <UploadImagesForm />
                             </div>
                         </div>
                     </div>
@@ -29,4 +29,4 @@ const StatusCreatePage = async (props) => {
             </div>
 )
 }
-export default StatusCreatePage;
+export default UploadPage;

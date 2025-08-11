@@ -1,29 +1,30 @@
 import React from 'react'
-import StatusEditForm from "@/components/admin/status/status-edit-form";
+import UserEditForm from "@/components/admin/users/user-edit-form";
 import PageBreadcrumb from '@/components/PageBreadcrumb';
-import { getStatusById } from '@/actions/status-actions';
 import { requireAdmin } from '@/lib/auth-guard';
+import { notFound } from 'next/navigation';
+import { getUserById } from '@/actions/user-actions';
 
-export const metadata= { title: "Status" }
+export const metadata= { title: "User" }
 
-const StatusEditPage = async (props) => {
+const UserEditPage = async (props:any) => {
     await requireAdmin();
     const { id } = await props.params;
-    const status = await getStatusById(id);
+    const user = await getUserById(id);
 
-     if (!status) notFound();
+     if (!user) notFound();
 
     return (
             <div className="container-fluid">
-                <PageBreadcrumb title="Status" subtitle="table" />
+                <PageBreadcrumb title="User" subtitle="table" />
                  <div className="row justify-content-center">
-                    <div className="col-xxl-10">
+                    <div className="col-xxl-6">
                         <div className="card">
                             <div className="card-header">
-                                <h4 className="card-title">Status Table</h4>
+                                <h4 className="card-title">Update User Information</h4>
                             </div>
                             <div className="card-body">
-                                <StatusEditForm status={status} />
+                                <UserEditForm user={user} />
                             </div>
                         </div>
                     </div>
@@ -31,4 +32,4 @@ const StatusEditPage = async (props) => {
             </div>
 )
 }
-export default StatusEditPage;
+export default UserEditPage;

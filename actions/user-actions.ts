@@ -3,6 +3,7 @@
 import {
   signInFormSchema,
   signUpFormSchema,
+  createNewUserFormSchema,
   updateUserFormSchema
 } from '@/schemas/validation-schemas';
 import { signIn, signOut } from '@/auth';
@@ -18,7 +19,7 @@ import { PAGE_SIZE } from '@/lib/constants';
 
 
 // Sign in the user with credentials
-export async function signInWithCredentials(  prevState,  formData) {
+export async function signInWithCredentials(  prevState:any,  formData: FormData) {
   try {
     // Validate form data against the sign-in schema
     const user = signInFormSchema.parse({
@@ -26,7 +27,7 @@ export async function signInWithCredentials(  prevState,  formData) {
       password: formData.get('password'),
     });
     //search for the user in the database
-    const dbUser = await prisma.User.findUnique({
+    const dbUser = await prisma.user.findUnique({
       where: { email: user.email },
     });
     console.log('DB User:', dbUser);
@@ -60,7 +61,7 @@ export async function signOutUser() {
 }
 
 // Sign up user
-export async function signUpUser(prevState, formData) {
+export async function signUpUser(prevState: any, formData: FormData) {
   try {
     console.log('Signing up user with form data:', formData);
     const user = signUpFormSchema.parse({
@@ -108,7 +109,7 @@ export async function signUpUser(prevState, formData) {
 }
 
 // Get user by the ID
-export async function getUserById(userId) {
+export async function getUserById(userId: string) {
   const user = await prisma.User.findFirst({
     where: { id: userId },
   });
@@ -117,7 +118,7 @@ export async function getUserById(userId) {
 }
 
 // Get all the users
-export async function getAllUsers({  limit = PAGE_SIZE,  page,  query,}) {
+export async function getAllUsers({  limit = PAGE_SIZE,  page,  query, }: { limit?: number; page: number; query?: string }) {
   const queryFilter =
     query && query !== 'all'
       ? {
@@ -146,7 +147,7 @@ export async function getAllUsers({  limit = PAGE_SIZE,  page,  query,}) {
 }
 
 // Delete a user
-export async function deleteUser(id) {
+export async function deleteUser(id: string) {
   try {
     await prisma.User.delete({ where: { id } });
 
@@ -163,9 +164,70 @@ export async function deleteUser(id) {
     };
   }
 }
+// create new user
+export async function createNewUser(formData: FormData) {
+  try {
+
+    const  first_name = formData.get('first_name');
+    const  last_name = formData.get('last_name');
+    const  email = formData.get('email');
+    const  password = formData.get('password');
+    const  isadmin = Boolean(formData.get('isadmin'));
+
+    const validatedFields = createNewUserFormSchema.safeParse({
+      first_name,
+      last_name,
+      email,
+      password,
+      isadmin,
+    });
+
+    if (!validatedFields.success) {
+      return {
+                error: "validation",
+                zodErrors: validatedFields.error.flatten().fieldErrors,
+                strapiErrors: null,
+                message: "Missing information on key fields.",
+              };
+            }
+    // Check if user already exists
+    const existingUser = await prisma.User.findUnique({
+      where: { email: email },
+    });
+
+    if (existingUser) {
+      return {
+        error: "already_exists",
+        message: `User with email "${email}" already exists`,
+      };
+    }
+    else{
+        const salt = await bcryptjs.genSalt(10);
+        const hashedPassword = await bcryptjs.hash(password as string, salt);
+
+        await prisma.user.create({
+          data: {
+            first_name: first_name,
+            last_name: last_name,
+            name: `${first_name} ${last_name}`,
+            email: email,
+            password: hashedPassword,
+            isadmin: isadmin,
+          },
+        });
+
+        return { success: true, message: 'User was created successfully' };
+      }
+  } catch (error) {
+    if (isRedirectError(error)) {
+      throw error;
+    }
+    return { success: false, message: formatError(error) };
+  }
+}
 
 // Update a user
-export async function updateUser(formData) {
+export async function updateUser(formData: FormData) {
   try {
       const first_name = formData.get("first_name");
       const last_name = formData.get("last_name");
@@ -174,15 +236,15 @@ export async function updateUser(formData) {
       const isadmin = Boolean(formData.get("isadmin"));
       const isactive = Boolean(formData.get("isactive"));
       const userId = formData.get("userid");
+      const password = formData.get("password");
 
-        const validatedFields = updateUserFormSchema.safeParse({
+      const validatedFields = updateUserFormSchema.safeParse({
           first_name,
           last_name,
           email,
           isactive,
           isadmin
         });
-
         if (!validatedFields.success) {
           return {
             error: "validation",
@@ -192,20 +254,33 @@ export async function updateUser(formData) {
           };
         }
     const user = await prisma.User.findUnique({ where: { id: userId } });
+
     if (!user) {
       return { success: false, message: 'User not found' };
     }
     // Update the user data
-    const updatedUser = {
+    const updatedUser: {
+      first_name: FormDataEntryValue | null;
+      last_name: FormDataEntryValue | null;
+      name: string;
+      isadmin: boolean;
+      isactive: boolean;
+      password?: string;
+    } = {
       first_name,
       last_name,
       name:  name,
       isadmin,
       isactive,
     };
-
+    if (password) {
+      const salt = await bcryptjs.genSalt(10);
+      const hashedPassword = await bcryptjs.hash(password as string, salt);
+      updatedUser.password = hashedPassword;
+    } 
+    
     await prisma.User.update({
-      where: { id: user.id },
+      where: { id: userId },
       data: updatedUser,
     });
 
@@ -213,7 +288,7 @@ export async function updateUser(formData) {
       success: true,
       message: 'User updated successfully',
     };
-  } catch (error) {
+  } catch (error: any) {
     return { success: false, message: error.message };
   }
 }

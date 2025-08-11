@@ -85,8 +85,11 @@ export const menuItems: MenuItemType[] = [
     {
         key: 'dashboard', label: 'Dashboard', icon: TbLayoutDashboard, url: '/dashboard',
     },
-    {key: 'status', label: 'Status Page', icon: TbStackFront, url: '/status'},
-    {key: 'landing', label: 'Landing Page', icon: TbStackFront, url: '/landing'},
+    {key: 'gallery', label: 'Gallery', icon: TbStackFront, url: '/admin/gallery'},
+    {key: 'categories', label: 'Categories', icon: TbStackFront, url: '/admin/categories'},
+    {key: 'status', label: 'Status', icon: TbStackFront, url: '/admin/status'},
+    {key: 'users', label: 'Users', icon: TbStackFront, url: '/admin/users'},
+    {key: 'landing', label: 'Landing', icon: TbStackFront, url: '/landing'},
     {key: 'custom', label: 'Custom Pages', isTitle: true},
     {
         key: 'auth',

@@ -12,33 +12,59 @@ export async function getNumbersArray() {
   return await Array.from({ length: 11 }, (_, i) => i);
 }
 
-// Get all the statuses
-export async function getAllStatus({  limit = PAGE_SIZE,  page,  query,}) {
-  const queryFilter =
-    query && query !== 'all'
-      ? {
-          status_name: {
-            contains: query,
-            mode: 'insensitive',
-          } ,
-        }
-      : {};
+// Get all the statuses with improved error handling
+export async function getAllStatus({ 
+  limit = PAGE_SIZE, 
+  page = 1, 
+  query 
+}: {
+  limit?: number;
+  page?: number;
+  query?: string;
+}) {
+  try {
+    const queryFilter =
+      query && query !== 'all' && query.trim() !== ''
+        ? {
+            OR: [
+              {
+                status_name: {
+                  contains: query.trim(),
+                  mode: 'insensitive' as const,
+                },
+              },
+              {
+                description: {
+                  contains: query.trim(),
+                  mode: 'insensitive' as const,
+                },
+              },
+            ],
+          }
+        : {};
 
-  const data = await prisma.Status.findMany({
-    where: {
-      ...queryFilter,
-    },
-    orderBy: { status_name: 'asc' },
-    take: limit,
-    skip: (page - 1) * limit,
-  });
+    const [data, dataCount] = await Promise.all([
+      prisma.Status.findMany({
+        where: queryFilter,
+        orderBy: { status_name: 'asc' },
+        take: limit,
+        skip: (page - 1) * limit,
+      }),
+      prisma.Status.count({
+        where: queryFilter,
+      }),
+    ]);
 
-  const dataCount = await prisma.Status.count();
-
-  return {
-    data,
-    totalPages: Math.ceil(dataCount / limit),
-  };
+    return {
+      data,
+      totalPages: Math.ceil(dataCount / limit),
+      totalCount: dataCount,
+      currentPage: page,
+    };
+  } catch (error) {
+    console.error('Error fetching statuses:', error);
+    throw new Error('Failed to fetch status records');
+  }
 }
 
 // fetch all statuses
@@ -55,7 +81,7 @@ export const fetchAllStatuses = async () => {
 }
 
   //get status data by ID
-  export const getStatusById = async (id) => {
+  export const getStatusById = async (id: string) => {
     try {
       const _status = await prisma.Status.findUnique({
         where: {id: id},
@@ -68,7 +94,7 @@ export const fetchAllStatuses = async () => {
   };
 
 
-export async function createStatus(formData) {
+export async function createStatus(formData: FormData) {
   noStore();
   try {
     console.log("Form data received in createStatus:", formData);
@@ -124,7 +150,7 @@ export async function createStatus(formData) {
 }
 
 //update status action
-export async function updateStatus(formData) {
+export async function updateStatus(formData: FormData) {
   noStore();
   try {
     const id = formData.get("id");
@@ -155,7 +181,7 @@ export async function updateStatus(formData) {
       }
     }
    const data = {
-      status_name: formData.status_name,
+      status_name: status_name,
       isactive: isactive,
       description: description,
       typeid: typeid,
@@ -178,7 +204,7 @@ export async function updateStatus(formData) {
 }
 
 //delete status action
-export async function deleteStatus(id) {
+export async function deleteStatus(id: string) {
   noStore();
 
   try {
