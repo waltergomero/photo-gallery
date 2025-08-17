@@ -9,13 +9,20 @@ import path from 'path';
 
 export const fetchImages = async (category_name = "") => { 
     try {
-        const _images = await prisma.UserImages.findMany({
-        where: {
-            // Filter by category name if provided else return all images
-            // If category_name is an empty string, it will return all images
+      noStore(); // Disable caching for this function
+      
+       let _images;
+
+       if (category_name === "All") {
+        _images = await prisma.UserImages.findMany({});
+      }
+      else {
+        _images = await prisma.UserImages.findMany({
+          where: {
             category_name: category_name ? { equals: category_name } : undefined,
-        },
+          },
         });
+      }
         const images = JSON.parse(JSON.stringify(_images));
         return images;
     } catch (err) {
@@ -124,6 +131,7 @@ export async function fetchCategoriesWithImages() {
 
     //add categoryId = 0 and category_name = "All" to the categories array
     categories.unshift({ categoryId: "0", category_name: "All" });
+    
     return categories;
   } catch (err) {
     return({error: "Failed to fetch categories with images! " + err});

@@ -17,7 +17,7 @@ type UserCreateFormState = {
     message?: string;
 };
 
-const UserCreateForm = ({user}:any) => {
+const UserCreateForm = () => {
     const router = useRouter();
     const [state, setState] = useState<UserCreateFormState | null>(null);
 
@@ -54,18 +54,18 @@ const UserCreateForm = ({user}:any) => {
             <form className="row g-3" onSubmit={onSubmit}>
                 <div className="col-md-6">
                     <label htmlFor="first_name" className="form-label">First Name:</label>
-                    <input type="text" className="form-control" id="first_name" name='first_name' defaultValue={user?.first_name} />
+                    <input type="text" className="form-control" id="first_name" name='first_name'  />
                     <ZodErrors error={state?.zodErrors?.first_name} />
                 </div>
                 <div className="col-md-6">
                     <label htmlFor="last_name" className="form-label">Last Name:</label>
-                    <input type="text" className="form-control" id="last_name" name='last_name' defaultValue={user?.last_name} />
+                    <input type="text" className="form-control" id="last_name" name='last_name'  />
                     <ZodErrors error={state?.zodErrors?.last_name} />
                 </div>
 
                 <div className="col-md-6">
                     <label htmlFor="email" className="form-label">Email:</label>
-                    <input type="text" className="form-control" id="email" name='email' defaultValue={user?.email} />
+                    <input type="text" className="form-control" id="email" name='email'  />
                     <ZodErrors error={state?.zodErrors?.email} />
                 </div>
                 <div className="col-md-6">
@@ -74,7 +74,7 @@ const UserCreateForm = ({user}:any) => {
                     <ZodErrors error={state?.zodErrors?.password} />
                 </div>
                 <div className="col-md-12">
-                    <CheckboxDefault  title="Is admin?" name="isadmin" checked={user?.isadmin} />
+                    <CheckboxDefault  title="Is admin?" name="isadmin" checked={false} />
                 </div>
                 <div className="col-12 justify-content-center d-flex">
                      <Button type='button' onClick={() => router.back()} className='btn btn-light'>Cancel</Button>

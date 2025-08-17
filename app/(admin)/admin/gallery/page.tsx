@@ -1,16 +1,14 @@
 import React from 'react'
 import GalleryGrid from "@/components/admin/gallery/gallery-grid";
 import PageBreadcrumb from '@/components/PageBreadcrumb';
-import { fetchImages, } from '@/actions/gallery-actions';
 import { requireAdmin } from '@/lib/auth-guard';
 import Link from 'next/link';
 
 
 export const metadata= { title: "Gallery" }
 
-
 const GalleryPage = async () => {
-  await requireAdmin();
+    await requireAdmin();
 
 
     return (

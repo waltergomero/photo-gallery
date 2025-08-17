@@ -1,0 +1,22 @@
+
+-- reset DATABASE
+npx prisma migrate reset
+
+-- generate
+npx prisma generate
+
+--create migration
+npx prisma migrate dev --name add-create
+
+--seed
+npx tsx ./db/seed
+
+-- to view database tables
+npx prisma studio
+
+
+
+
+//github repo; https://github.com/bradtraversy/prostore
+
+

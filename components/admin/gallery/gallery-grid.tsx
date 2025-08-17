@@ -1,11 +1,8 @@
 'use client';
 
 import React, {useState, useEffect} from 'react';
-import UploadImagesForm from './upload-images';
-import {DeleteImageBtn, SetImageVisible, SetImageNotVisible, EditImageBtn, 
-  SetAllImageVisible, SetAllImageNotVisible, SetAllImageVisibility } from './buttons';
+import {DeleteImageBtn, SetImageVisible, SetImageNotVisible, EditImageBtn} from './buttons';
 import {fetchImages, fetchImagesByCategory, fetchCategoriesWithImages } from "@/actions/gallery-actions";
-
 
 
 interface GalleryGridProps {
@@ -15,8 +12,14 @@ interface GalleryGridProps {
 const GalleryGrid = ({category_name}: GalleryGridProps) => {
   const [categories, setCategories] = useState<any[]>([]);
   const [images, setImages] = useState<any[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<string>("");
 
   const _category_name = category_name ? category_name : "All";
+
+  // Initialize selectedCategory when component mounts or category_name prop changes
+  useEffect(() => {
+    setSelectedCategory(_category_name.toLowerCase());
+  }, [_category_name]);
 
   useEffect(() => {
     // Fetch categories with images
@@ -26,7 +29,7 @@ const GalleryGrid = ({category_name}: GalleryGridProps) => {
     };
 
     const loadImages = async () => {
-      const imagesData = await fetchImagesByCategory(_category_name);
+      const imagesData = await fetchImages(_category_name);
       setImages(imagesData);
     };
 
@@ -34,22 +37,21 @@ const GalleryGrid = ({category_name}: GalleryGridProps) => {
     loadImages();
   }, [_category_name]);
 
-  const handleClick = async (e:any) => {
-        e.preventDefault();
-        const dropdownName = e.target.options[e.target.selectedIndex].text;
-        const imagesData = await fetchImagesByCategory(dropdownName);
-        setImages(imagesData);
-      };
-
-
+  const handleChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedValue = e.target.value;
+    const dropdownName = e.target.options[e.target.selectedIndex].text;
+    setSelectedCategory(selectedValue);
+    const imagesData = await fetchImages(dropdownName);
+    setImages(imagesData);
+  };
 
   return (
     <div>
        <div className="mb-3 col-md-2">
           <select
             name="category_id"
-             onClick={handleClick}
-            defaultValue={_category_name ? _category_name.toLowerCase() : ""}
+            onChange={handleChange}
+            value={selectedCategory}
             className="form-select">
             {categories.map((category:any) => (
                 <option key={category.categoryId} value={category.category_name.toLowerCase()}>
