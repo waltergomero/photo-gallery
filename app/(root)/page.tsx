@@ -37,9 +37,9 @@ const HomePage = async () => {
                {categories && categories?.map((item:any) =>(    
                   <div key={item.id} style={{ backgroundImage: `url(${item.src})`, height: '500px', backgroundSize: 'cover', backgroundPosition: 'center' }} 
                       className="img-bg-home col-sm-3 p-0 position-relative">
-                      <Link href={`/grid/${item.category_name}`}
+                      <a href={`/grid/${item.category_name}`}
                       style={{ display: 'flex', margin: 0, alignItems: 'center', justifyContent: 'center' }}>
-                      <div className="photo-caption" style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', textAlign: 'center' }}><h2>{item.category_name}</h2><p style={{ color: 'red' }}>COLLECTION</p></div></Link>
+                      <div className="photo-caption" style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', textAlign: 'center' }}><h2>{item.category_name}</h2><p style={{ color: 'red' }}>COLLECTION</p></div></a>
                   </div>
                ))
               }
