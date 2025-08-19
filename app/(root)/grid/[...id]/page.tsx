@@ -8,23 +8,21 @@ import '@/assets/gallery/css/jquery.fancybox.min.css';
 
 const GridImagesPage = async ({params}: any) => {
     const _params = await params;
-    const category_name =_params.id[0].replace(/%20/g, ' ');
-    const images = await fetchImagesByCategory(category_name) ;
-    console.log('images in grid page', images, );
+    const categoryName = _params.id ? decodeURIComponent(_params.id[0]) : 'All';
+    const images = await fetchImagesByCategory(categoryName);
     return (
      <>
     <div className="page-header container-fluid p-0">
 		<div className="row m-0 align-items-center justify-content-center bg-dark">
 		    <img src="/images/header-placeholder-min.png" alt="Header Placeholder"/>
-		    <h1 className="h1 position-absolute single-category-title">Category<small>{category_name}</small></h1>
+		    <h1 className="h1 position-absolute single-category-title">Category<small>{categoryName}</small></h1>
 		</div>
 	  </div>
-      <div className="content-page2">
-        
-        <div className="container gallery-wrap mt-3 mt-sm-5">        
+      <div className="content-page">
+        <div className="container gallery-wrap mt-sm-5">
           <div className="row artist-gallery-images">
             {images && images?.map((item: any, index: number) =>(          
-              <div key={index} className="col-sm-4">
+              <div key={index} className="col-sm-3">
                 <div className="photo-box position-relative">
                     <a className="position-absolute enlarge-photo" 
                        data-id="20389751" 

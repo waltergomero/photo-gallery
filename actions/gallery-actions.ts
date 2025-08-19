@@ -32,7 +32,7 @@ export const fetchImages = async (category_name = "") => {
 
 export const fetchImagesByCategory = async (category_name: string) => {
   try {
-    noStore(); // Disable caching for this function
+    //noStore(); // Disable caching for this function
     let _images = "";
 
       if(category_name === "All" || category_name === "0"){

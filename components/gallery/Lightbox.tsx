@@ -21,6 +21,7 @@ export default function Lightbox({
   onPrevious
 }: LightboxProps) {
   const [isLoading, setIsLoading] = useState(true);
+  const [hasError, setHasError] = useState(false);
   const currentImage = images[currentIndex];
 
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
@@ -100,21 +101,29 @@ export default function Lightbox({
 
       {/* Image container */}
       <div className="relative max-w-4xl max-h-screen w-full h-full flex items-center justify-center p-4">
-        {isLoading && (
+        {isLoading && !hasError && (
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="w-12 h-12 border-4 border-white border-t-transparent rounded-full animate-spin" />
           </div>
         )}
-        
-        <img
-          src={currentImage.src}
-          alt={currentImage.caption || `Gallery image ${currentIndex + 1}`}
-          className={`max-w-full max-h-full object-contain transition-opacity duration-300 ${
-            isLoading ? 'opacity-0' : 'opacity-100'
-          }`}
-          onLoad={() => setIsLoading(false)}
-          onError={() => setIsLoading(false)}
-        />
+        {hasError ? (
+          <div className="absolute inset-0 flex items-center justify-center">
+            <span className="text-white text-lg">Failed to load image.</span>
+          </div>
+        ) : (
+          <img
+            src={currentImage.src}
+            alt={currentImage.caption || `Gallery image ${currentIndex + 1}`}
+            className={`max-w-full max-h-full object-contain transition-opacity duration-300 ${
+              isLoading ? 'opacity-0' : 'opacity-100'
+            }`}
+            onLoad={() => setIsLoading(false)}
+            onError={() => {
+              setIsLoading(false);
+              setHasError(true);
+            }}
+          />
+        )}
       </div>
 
       {/* Image info */}

@@ -53,9 +53,9 @@ export default function Header() {
                                 ))}
                             </Nav>
                             <div className="d-flex align-items-center">
-                                {/* <Button variant="link" className="btn-icon fw-semibold text-body me-2" onClick={toggleTheme}>
+                                <Button variant="link" className="btn-icon fw-semibold text-body me-2" onClick={toggleTheme}>
                                     <TbContrast className="fs-22" />
-                                </Button> */}
+                                </Button>
                                 <Link href="/signin" className="btn btn-link fw-semibold text-body ps-2">SIGN IN</Link>
                                 <Link href="/signup" className="btn btn-sm btn-primary ms-2">Sign Up</Link>
                             </div>
